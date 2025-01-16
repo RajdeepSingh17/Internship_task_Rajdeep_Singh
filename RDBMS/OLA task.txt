@@ -1,0 +1,56 @@
+1. Retrieve the names and contact details of all drivers with a rating of 4.5 or higher.
+	SELECT FirstName, LastName, Phone, City, Rating
+    FROM Drivers
+    WHERE Rating >= 4.5;
+ 2. Find the total number of rides completed by each driver.
+	SELECT Drivers.DriverID, Drivers.FirstName, Drivers.LastName, COUNT(Rides.RideID) AS TotalRides
+    FROM Drivers
+    LEFT JOIN Rides ON Drivers.DriverID = Rides.DriverID
+    WHERE Rides.RideStatus = 'Completed'
+    GROUP BY Drivers.DriverID, Drivers.FirstName, Drivers.LastName;
+ 3. List all riders who have never booked a ride.
+    SELECT Riders.FirstName, Riders.LastName, Riders.Phone, Riders.City
+    FROM Riders
+    LEFT JOIN Rides ON Riders.RiderID = Rides.RiderID
+    WHERE Rides.RideID IS NULL;
+ 4. Calculate the total earnings of each driver from completed rides.
+    SELECT Drivers.DriverID, Drivers.FirstName, Drivers.LastName, SUM(Rides.Fare) AS TotalEarnings
+    FROM Drivers
+    JOIN Rides ON Drivers.DriverID = Rides.DriverID
+    WHERE Rides.RideStatus = 'Completed'
+    GROUP BY Drivers.DriverID, Drivers.FirstName, Drivers.LastName;
+ 5. Retrieve the most recent ride for each rider.
+    SELECT Riders.RiderID, Riders.FirstName, Riders.LastName, MAX(Rides.RideDate) AS MostRecentRide
+    FROM Riders
+    LEFT JOIN Rides ON Riders.RiderID = Rides.RiderID
+    GROUP BY Riders.RiderID, Riders.FirstName, Riders.LastName;
+ 6. Count the number of rides taken in each city.
+    SELECT Drivers.City, COUNT(Rides.RideID) AS TotalRides
+    FROM Drivers
+    JOIN Rides ON Drivers.DriverID = Rides.DriverID
+    GROUP BY Drivers.City;
+ 7. List all rides where the distance was greater than 20 km.
+    SELECT RideID, RiderID, DriverID, PickupLocation, DropLocation, Distance, Fare, RideDate
+    FROM Rides
+    WHERE Distance > 20;
+ 8. Identify the most preferred payment method.
+    SELECT PaymentMethod, COUNT(PaymentID) AS UsageCount
+    FROM Payments
+    GROUP BY PaymentMethod
+    ORDER BY UsageCount DESC
+    LIMIT 1;
+ 9. Find the top 3 highest-earning drivers.
+    SELECT Drivers.DriverID, Drivers.FirstName, Drivers.LastName, SUM(Rides.Fare) AS TotalEarnings
+    FROM Drivers
+    JOIN Rides ON Drivers.DriverID = Rides.DriverID
+    WHERE Rides.RideStatus = 'Completed'
+    GROUP BY Drivers.DriverID, Drivers.FirstName, Drivers.LastName
+    ORDER BY TotalEarnings DESC
+    LIMIT 3;
+10. Retrieve details of all cancelled rides along with the rider's and driver's names
+    SELECT Rides.RideID, Riders.FirstName AS RiderFirstName, Riders.LastName AS RiderLastName,
+    Drivers.FirstName AS DriverFirstName, Drivers.LastName AS DriverLastName, Rides.RideDate, Rides.PickupLocation, Rides.DropLocation
+    FROM Rides
+    JOIN Riders ON Rides.RiderID = Riders.RiderID
+    JOIN Drivers ON Rides.DriverID = Drivers.DriverID
+    WHERE Rides.RideStatus = 'Cancelled'; 

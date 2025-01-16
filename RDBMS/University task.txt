@@ -1,0 +1,145 @@
+1. Find the Total Number of Students in Each Department:
+
+SELECT 
+    department_name, 
+    COUNT(student_id) AS total_students
+FROM 
+    Students
+JOIN 
+    Departments ON Students.department_id = Departments.department_id
+GROUP BY 
+    department_name;
+2. List All Courses Taught by a Specific Professor:
+
+SELECT 
+    Professors.first_name,
+    Professors.last_name,
+    Courses.course_name
+FROM 
+    Courses
+JOIN 
+    Professors ON Courses.professor_id = Professors.professor_id;
+3. Find the Average Grade of Students in Each Course:
+
+SELECT 
+    course_name, 
+    AVG(
+        CASE
+            WHEN grade = 'A' THEN 4
+            WHEN grade = 'B' THEN 3
+            WHEN grade = 'C' THEN 2
+            WHEN grade = 'D' THEN 1
+            ELSE 0
+        END
+    ) AS average_grade
+FROM 
+    Enrollments
+JOIN 
+    Courses ON Enrollments.course_id = Courses.course_id
+GROUP BY 
+    course_name;
+4. List All Students Who Have Not Enrolled in Any Courses:
+
+SELECT 
+    first_name, 
+    last_name
+FROM 
+    Students
+WHERE 
+    student_id NOT IN (SELECT student_id FROM Enrollments);
+5. Find the Number of Courses Offered by Each Department:
+
+SELECT 
+    department_name, 
+    COUNT(course_id) AS total_courses
+FROM 
+    Courses
+JOIN 
+    Departments ON Courses.department_id = Departments.department_id
+GROUP BY 
+    department_name;
+6. List All Students Who Have Taken a Specific Course (e.g., 'Database Systems'):
+SELECT 
+    Students.student_id,
+    Students.first_name,
+    Students.last_name,
+    Courses.course_name
+FROM 
+    Students
+LEFT JOIN 
+    Enrollments ON Students.student_id = Enrollments.student_id
+LEFT JOIN 
+    Courses ON Enrollments.course_id = Courses.course_id
+ORDER BY 
+    Students.student_id, Courses.course_name;
+7. Find the Most Popular Course Based on Enrollment Numbers:
+
+SELECT 
+    course_name, 
+    COUNT(student_id) AS enrollment_count
+FROM 
+    Enrollments
+JOIN 
+    Courses ON Enrollments.course_id = Courses.course_id
+GROUP BY 
+    course_name
+ORDER BY 
+    enrollment_count DESC
+LIMIT 1;
+8. Find the Average Number of Credits Per Student in a Department:
+
+SELECT 
+    Departments.department_name, 
+    AVG(Courses.credits) AS average_credits
+FROM 
+    Students
+JOIN 
+    Courses ON Students.department_id = Courses.department_id
+JOIN 
+    Enrollments ON Courses.course_id = Enrollments.course_id
+JOIN 
+    Departments ON Students.department_id = Departments.department_id
+GROUP BY 
+    Departments.department_name;
+9. List All Professors Who Teach in More Than One Department:
+
+SELECT 
+    Professors.first_name,
+    Professors.last_name,
+    COUNT(DISTINCT Courses.department_id) AS department_count
+FROM 
+    Professors
+JOIN 
+    Courses ON Professors.professor_id = Courses.professor_id
+GROUP BY 
+    Professors.professor_id, Professors.first_name, Professors.last_name
+HAVING 
+    department_count > 1;
+10. Get the Highest and Lowest Grade in a Specific Course (e.g., 'Operating Systems'):
+
+SELECT 
+    Courses.course_name,
+    MAX(
+        CASE 
+            WHEN grade = 'A' THEN 4
+            WHEN grade = 'B' THEN 3
+            WHEN grade = 'C' THEN 2
+            WHEN grade = 'D' THEN 1
+            ELSE 0
+        END
+    ) AS highest_grade,
+    MIN(
+        CASE 
+            WHEN grade = 'A' THEN 4
+            WHEN grade = 'B' THEN 3
+            WHEN grade = 'C' THEN 2
+            WHEN grade = 'D' THEN 1
+            ELSE 0
+        END
+    ) AS lowest_grade
+FROM 
+    Enrollments
+JOIN 
+    Courses ON Enrollments.course_id = Courses.course_id
+GROUP BY 
+    Courses.course_name;
