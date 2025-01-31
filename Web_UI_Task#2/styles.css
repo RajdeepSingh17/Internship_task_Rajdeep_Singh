@@ -1,0 +1,13 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #a1afbd;
+  }
+  
+  #news-feed .card {
+    margin-bottom: 20px;
+  }
+  
+  #pagination button {
+    min-width: 100px;
+  }
+  
